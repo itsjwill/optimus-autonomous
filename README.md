@@ -20,49 +20,108 @@
 
 ## What is Optimus Autonomous?
 
-Optimus Autonomous is a multi-agent AI operating system — a unified framework that combines powerful autonomous agent technologies into one self-learning, self-optimizing intelligence mesh.
+Optimus Autonomous is a multi-agent AI operating system — a unified framework that combines **30+ open-source technologies** into one self-learning, self-optimizing intelligence mesh.
 
 **One brain. Many agents. Infinite potential.**
 
 ---
 
-## Current Implementation
+## The Stack
 
-### Core Features (v0.1.0)
+Optimus synthesizes these technologies into a cohesive system:
 
-| Component | Status | Description |
-|-----------|--------|-------------|
-| **Multi-Agent Orchestration** | ✅ Implemented | Async task execution with sequential, parallel, and hierarchical modes |
-| **Agent Teams** | ✅ Implemented | Specialized Code, Web, and Strategy teams with role-based collaboration |
-| **Memory Layer** | ✅ Implemented | SQLite brain.db for persistent memory + optional Mem0 integration |
-| **Security Guardrails** | ✅ Implemented | Input/output validation, prompt injection detection, dangerous pattern blocking |
-| **Code Sandbox** | ✅ Implemented | E2B integration for safe code execution (with local fallback) |
-| **Observability** | ✅ Implemented | AgentOps integration for cost tracking and session monitoring |
-| **CLI Interface** | ✅ Implemented | Full CLI with init, run, deploy, status, and interactive modes |
+### Core Orchestration
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **CrewAI** | ✅ Built-in | Role-based agent collaboration |
+| **LangGraph** | ✅ Built-in | Cyclical workflows with state management |
+| **Custom Orchestrator** | ✅ Built-in | Async task execution, parallel/sequential/hierarchical |
 
-### Architecture
+### Agent Teams
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **Code Team** | ✅ Implemented | Architect + Developer + Reviewer (sequential) |
+| **Web Team** | ✅ Implemented | Researcher + Analyzer (parallel) |
+| **Strategy Team** | ✅ Implemented | Strategist + Analyst + Risk Manager (hierarchical) |
+
+### Memory & Knowledge
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **BrainDB** | ✅ Implemented | SQLite storage for memories, patterns, decisions |
+| **Mem0** | ✅ Optional | Universal cross-session memory |
+| **Knowledge Graph** | ✅ Implemented | Entity-relationship storage with graph traversal |
+| **ChromaDB** | ✅ Optional | Vector embeddings for semantic search |
+
+### Tools & Automation
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **MCP Client** | ✅ Implemented | Model Context Protocol for 200+ tools |
+| **Browser Tool** | ✅ Implemented | Playwright-based web automation |
+| **File Tools** | ✅ Implemented | Safe file operations with sandbox |
+| **Web Tools** | ✅ Implemented | HTTP requests, scraping, API calls |
+| **Tool Registry** | ✅ Implemented | Centralized tool management and execution |
+
+### Model Routing
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **Smart Router** | ✅ Implemented | Auto-selects optimal model per task |
+| **Cost Optimization** | ✅ Implemented | Routes to cheaper models when appropriate |
+| **Multi-Provider** | ✅ Implemented | Anthropic + OpenAI support |
+
+### Execution & Sandboxing
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **E2B** | ✅ Implemented | Cloud sandboxing (125ms boot) |
+| **Local Fallback** | ✅ Implemented | Safe local execution with validation |
+| **Code Validation** | ✅ Implemented | Dangerous pattern blocking |
+
+### Security & Guardrails
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **Input Guardrails** | ✅ Implemented | 19 prompt injection patterns |
+| **Output Validation** | ✅ Implemented | Content filtering, PII detection |
+| **LLM Guard** | ✅ Optional | Advanced prompt injection protection |
+
+### Observability
+| Component | Integration | Purpose |
+|-----------|-------------|---------|
+| **AgentOps** | ✅ Optional | Cost tracking, session monitoring |
+| **Metrics Collector** | ✅ Implemented | Token usage, duration, success rates |
+| **Event Observer** | ✅ Implemented | Full audit trail with timestamps |
+
+---
+
+## Architecture
 
 ```
 optimus/
-├── core/               # Orchestration engine
-│   ├── config.py       # Configuration management
-│   └── orchestrator.py # Task execution and agent coordination
-├── agents/             # Agent teams
-│   ├── base.py         # BaseAgent and LLMAgent classes
-│   ├── team.py         # Team coordination (sequential/parallel/hierarchical)
-│   ├── code_team.py    # Software development team
-│   ├── web_team.py     # Web research team
-│   └── strategy_team.py # Strategic planning team
-├── memory/             # Persistence layer
-│   ├── brain_db.py     # SQLite storage for memories, patterns, decisions
-│   └── manager.py      # Unified memory interface (Mem0 optional)
-├── security/           # Safety and guardrails
-│   ├── guardrails.py   # Input/output validation (19 injection patterns)
-│   └── sandbox.py      # E2B sandboxed code execution
-├── observability/      # Monitoring
-│   ├── observer.py     # Event tracking, session management
-│   └── metrics.py      # Performance metrics collection
-└── tools/              # Tool integrations (extensible)
+├── core/                   # Orchestration engine
+│   ├── config.py           # Configuration management
+│   ├── orchestrator.py     # Task execution and agent coordination
+│   └── router.py           # Smart model selection
+├── agents/                 # Agent teams
+│   ├── base.py             # BaseAgent and LLMAgent classes
+│   ├── team.py             # Team coordination
+│   ├── code_team.py        # Software development team
+│   ├── web_team.py         # Web research team
+│   └── strategy_team.py    # Strategic planning team
+├── memory/                 # Persistence layer
+│   ├── brain_db.py         # SQLite storage
+│   ├── manager.py          # Unified memory interface
+│   └── knowledge_graph.py  # Entity-relationship graph
+├── security/               # Safety and guardrails
+│   ├── guardrails.py       # Input/output validation
+│   └── sandbox.py          # Code execution sandbox
+├── tools/                  # Tool integrations
+│   ├── registry.py         # Central tool registry
+│   ├── mcp_client.py       # MCP server connections
+│   ├── browser.py          # Playwright automation
+│   ├── file_tools.py       # File operations
+│   └── web_tools.py        # HTTP and scraping
+├── observability/          # Monitoring
+│   ├── observer.py         # Event tracking
+│   └── metrics.py          # Performance metrics
+└── constants.py            # Centralized defaults
 ```
 
 ---
@@ -76,6 +135,9 @@ cd optimus-autonomous
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Install Playwright browsers (for web automation)
+playwright install chromium
 
 # Show the banner
 python optimus.py banner
@@ -100,98 +162,142 @@ python ../optimus.py interactive
 
 ---
 
-## Agent Teams
+## Features
 
-### Code Team (Sequential)
-- **Architect** — Designs clean, scalable solutions
-- **Developer** — Implements high-quality, tested code
-- **Reviewer** — Ensures quality and catches bugs
+### Smart Model Routing
+
+Automatically selects the optimal model based on task complexity:
 
 ```python
-from optimus.agents import CodeTeam
+from optimus.core import ModelRouter
 
-team = CodeTeam()
-result = await team.implement_feature(
-    "Add user authentication with JWT tokens",
-    requirements=["secure", "stateless", "refresh tokens"]
-)
+router = ModelRouter(prefer_speed=False)
+decision = router.route("Analyze this complex algorithm and suggest optimizations")
+
+print(decision.model)      # claude-3-5-sonnet-20241022
+print(decision.reason)     # Selected for expert-level analysis task
+print(decision.confidence) # 0.92
 ```
 
-### Web Team (Parallel)
-- **Researcher** — Finds and extracts relevant information
-- **Analyzer** — Synthesizes findings into insights
+### MCP Tool Integration
+
+Connect to Model Context Protocol servers for 200+ tools:
 
 ```python
-from optimus.agents import WebTeam
+from optimus.tools import MCPClient, get_registry
 
-team = WebTeam()
-result = await team.research(
-    "AI agent frameworks comparison 2024",
-    sources=["github", "papers", "blogs"]
-)
+client = MCPClient(registry=get_registry())
+
+# Connect to filesystem and fetch servers
+await client.connect("filesystem", "npx", ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"])
+await client.connect("fetch", "npx", ["-y", "@modelcontextprotocol/server-fetch"])
+
+# List available tools
+print(client.list_tools())
+
+# Call a tool
+result = await client.call_tool("filesystem", "read_file", {"path": "/tmp/test.txt"})
 ```
 
-### Strategy Team (Hierarchical)
-- **Strategist** — Develops winning strategies (manager)
-- **Analyst** — Analyzes data and markets
-- **Risk Manager** — Assesses risks and mitigations
+### Browser Automation
+
+Full web automation with Playwright:
 
 ```python
-from optimus.agents import StrategyTeam
+from optimus.tools import BrowserTool
 
-team = StrategyTeam()
-result = await team.develop_strategy(
-    "Enter the European market",
-    constraints=["limited budget", "6-month timeline"]
-)
+browser = BrowserTool()
+await browser.initialize()
+
+# Navigate and interact
+await browser.navigate("https://example.com")
+await browser.click("button.submit")
+await browser.fill("input[name=email]", "test@example.com")
+
+# Extract content
+text = await browser.get_text()
+links = await browser.get_links()
+screenshot = await browser.screenshot(full_page=True)
 ```
 
----
+### Knowledge Graph
 
-## Memory System
-
-Optimus remembers everything across sessions:
+Store and query entity relationships:
 
 ```python
-from optimus.memory import BrainDB
+from optimus.memory import KnowledgeGraph
 
+graph = KnowledgeGraph("knowledge.db")
+await graph.initialize()
+
+# Add entities
+await graph.add_entity("user_1", "person", "John Doe", {"role": "developer"})
+await graph.add_entity("project_1", "project", "Optimus", {"status": "active"})
+
+# Add relationships
+await graph.add_relationship("user_1", "project_1", "works_on", weight=1.0)
+
+# Query the graph
+neighbors = await graph.get_neighbors("user_1", depth=2)
+path = await graph.find_path("user_1", "project_1")
+```
+
+### Agent Teams
+
+Three specialized teams with different execution patterns:
+
+```python
+from optimus.agents import CodeTeam, WebTeam, StrategyTeam
+
+# Code Team (Sequential: Architect → Developer → Reviewer)
+code = CodeTeam()
+result = await code.implement_feature("Add JWT authentication")
+
+# Web Team (Parallel: Researcher + Analyzer simultaneously)
+web = WebTeam()
+result = await web.research("AI agent frameworks 2024")
+
+# Strategy Team (Hierarchical: Strategist delegates to Analyst + Risk)
+strategy = StrategyTeam()
+result = await strategy.develop_strategy("Enter European market")
+```
+
+### Memory System
+
+Persistent memory across sessions:
+
+```python
+from optimus.memory import BrainDB, MemoryManager
+
+# Direct SQLite access
 brain = BrainDB("brain.db")
 await brain.initialize()
-
-# Store memories
 await brain.store_memory("pattern", "Users prefer dark mode", {"source": "analytics"})
-
-# Search memories
 results = await brain.search_memories("pattern", "user preferences")
 
-# Store learned patterns
-await brain.store_pattern("optimization", "Cache API responses for 5 minutes")
+# Unified interface (with optional Mem0)
+manager = MemoryManager(config)
+await manager.initialize()
+await manager.add("Important context for future tasks")
+context = await manager.get_context("current task description")
 ```
 
----
+### Security Guardrails
 
-## Security
-
-### Input Validation
-- 19 prompt injection detection patterns
-- 8 sensitive data (PII) detection patterns
-- 4 harmful content filters
-- Rate limiting and anomaly detection
-
-### Code Sandboxing
-- E2B cloud sandboxing (125ms boot)
-- Local fallback with dangerous pattern blocking
-- File system and network isolation
+Built-in protection against malicious inputs:
 
 ```python
-from optimus.security import SandboxManager
+from optimus.security import GuardrailsManager
 
-sandbox = SandboxManager(config)
-result = await sandbox.execute(
-    code="print('Hello, World!')",
-    language="python",
-    timeout_ms=5000
-)
+guardrails = GuardrailsManager(config)
+
+# Check input
+is_safe, reason = await guardrails.check_input(user_input)
+if not is_safe:
+    print(f"Blocked: {reason}")
+
+# Check output
+is_safe, reason = await guardrails.check_output(agent_output)
 ```
 
 ---
@@ -231,39 +337,33 @@ verbose: true
 
 ---
 
-## Roadmap
+## CLI Commands
 
-### Completed (v0.1.0)
-- [x] Core orchestration layer
-- [x] Agent teams (Code, Web, Strategy)
-- [x] Memory layer (SQLite + Mem0)
-- [x] Security guardrails
-- [x] E2B sandbox integration
-- [x] AgentOps observability
-- [x] CLI interface
-
-### Coming Soon
-- [ ] MCP tool server integration
-- [ ] Knowledge graphs (Graphiti)
-- [ ] Web automation (Agent-Browser, Stagehand)
-- [ ] Model routing optimization
-- [ ] Production hardening
+| Command | Description |
+|---------|-------------|
+| `optimus init <name>` | Initialize a new project |
+| `optimus status` | Show system status and API keys |
+| `optimus run --task "..." --team code` | Run a task with specified team |
+| `optimus run --iterations 100` | Run autonomous loop |
+| `optimus deploy --teams code,web,strategy` | Deploy agent teams |
+| `optimus interactive` | Interactive REPL mode |
+| `optimus banner` | Show the banner |
 
 ---
 
 ## Inspired By
 
-Optimus Autonomous draws inspiration from these excellent projects:
+Optimus Autonomous draws inspiration from 30+ excellent projects:
 
-| Project | Inspiration |
-|---------|-------------|
-| [MEGAMIND](https://github.com/itsjwill/megamind) | Autonomous project execution with fresh context |
-| [CrewAI](https://github.com/crewAIInc/crewAI) | Role-based agent collaboration |
-| [LangGraph](https://github.com/langchain-ai/langgraph) | Cyclical workflows with state management |
-| [Mem0](https://github.com/mem0ai/mem0) | Persistent cross-session memory |
-| [E2B](https://github.com/e2b-dev/E2B) | Fast, secure code sandboxing |
-| [AgentOps](https://github.com/AgentOps-AI/agentops) | Agent monitoring and cost tracking |
-| [LLM Guard](https://github.com/protectai/llm-guard) | Prompt injection protection |
+| Category | Projects |
+|----------|----------|
+| **Orchestration** | CrewAI, LangGraph, Ralphy, MEGAMIND, Eigent |
+| **Memory** | Mem0, Graphiti, ChromaDB |
+| **Tools** | MCP Servers, Playwright, Stagehand |
+| **Execution** | E2B, Arrakis |
+| **Security** | LLM Guard, NeMo Guardrails, Rebuff |
+| **Observability** | AgentOps, OpenLit |
+| **Research** | Nexus BT, AgentBench |
 
 ---
 
