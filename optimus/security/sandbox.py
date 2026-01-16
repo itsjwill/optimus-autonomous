@@ -128,6 +128,7 @@ class SandboxManager:
             loop = asyncio.get_event_loop()
 
             def run_in_sandbox():
+                """Execute code in E2B sandbox and return result."""
                 sandbox = Sandbox()
                 try:
                     if language == "python":

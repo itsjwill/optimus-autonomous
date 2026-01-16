@@ -197,6 +197,7 @@ You are part of Optimus Autonomous, a multi-agent system. Execute tasks efficien
         loop = asyncio.get_event_loop()
 
         def call():
+            """Sync wrapper for Anthropic API call."""
             response = self.client.messages.create(
                 model=self.model,
                 max_tokens=4096,
@@ -218,6 +219,7 @@ You are part of Optimus Autonomous, a multi-agent system. Execute tasks efficien
         loop = asyncio.get_event_loop()
 
         def call():
+            """Sync wrapper for OpenAI API call."""
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[

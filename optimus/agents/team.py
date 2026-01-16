@@ -2,11 +2,13 @@
 Team - Agent team coordination
 """
 
-from typing import List, Dict, Any, Optional
-from dataclasses import dataclass
+from typing import List, Dict, Any
 
-from ..core.config import OptimusConfig, TeamConfig, AgentConfig
-from .base import BaseAgent, LLMAgent, AgentResponse
+from ..core.config import OptimusConfig, TeamConfig
+from .base import BaseAgent, LLMAgent
+from .code_team import CodeTeam
+from .web_team import WebTeam
+from .strategy_team import StrategyTeam
 
 
 class Team:
@@ -189,73 +191,19 @@ class TeamFactory:
         )
 
     @staticmethod
-    def create_default_teams() -> Dict[str, TeamConfig]:
-        """Create default team configurations."""
+    def create_default_teams(model: str = "claude-3-5-sonnet-20241022", verbose: bool = True) -> Dict[str, "Team"]:
+        """
+        Create default specialized team instances.
+
+        Args:
+            model: LLM model to use for agents
+            verbose: Whether to enable verbose output
+
+        Returns:
+            Dictionary of team name to Team instance
+        """
         return {
-            "code": TeamConfig(
-                name="code",
-                process="sequential",
-                agents=[
-                    AgentConfig(
-                        name="Architect",
-                        role="Software Architect",
-                        goal="Design clean, scalable solutions",
-                        backstory="Expert in system design and best practices."
-                    ),
-                    AgentConfig(
-                        name="Developer",
-                        role="Senior Developer",
-                        goal="Write high-quality, tested code",
-                        backstory="Experienced developer who writes clean code."
-                    ),
-                    AgentConfig(
-                        name="Reviewer",
-                        role="Code Reviewer",
-                        goal="Ensure code quality and catch bugs",
-                        backstory="Meticulous reviewer focused on quality."
-                    ),
-                ]
-            ),
-            "web": TeamConfig(
-                name="web",
-                process="parallel",
-                agents=[
-                    AgentConfig(
-                        name="Researcher",
-                        role="Web Researcher",
-                        goal="Find and extract relevant information",
-                        backstory="Expert at finding information online."
-                    ),
-                    AgentConfig(
-                        name="Analyzer",
-                        role="Data Analyzer",
-                        goal="Analyze and synthesize findings",
-                        backstory="Skilled at making sense of complex data."
-                    ),
-                ]
-            ),
-            "strategy": TeamConfig(
-                name="strategy",
-                process="hierarchical",
-                agents=[
-                    AgentConfig(
-                        name="Strategist",
-                        role="Chief Strategist",
-                        goal="Develop winning strategies",
-                        backstory="Experienced strategist with track record of success."
-                    ),
-                    AgentConfig(
-                        name="Analyst",
-                        role="Market Analyst",
-                        goal="Analyze market conditions and trends",
-                        backstory="Data-driven analyst with deep market knowledge."
-                    ),
-                    AgentConfig(
-                        name="Risk",
-                        role="Risk Manager",
-                        goal="Identify and mitigate risks",
-                        backstory="Cautious professional focused on risk management."
-                    ),
-                ]
-            ),
+            "code": CodeTeam(model=model, verbose=verbose),
+            "web": WebTeam(model=model, verbose=verbose),
+            "strategy": StrategyTeam(model=model, verbose=verbose),
         }
