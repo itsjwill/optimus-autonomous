@@ -1,0 +1,10 @@
+# Optimus Autonomous - Dependencies
+# Core (to be implemented)
+
+# Placeholder for future integrations:
+# crewai
+# langgraph
+# mem0ai
+# e2b
+# agentops
+# chromadb
