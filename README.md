@@ -75,6 +75,17 @@ Optimus Autonomous synthesizes **23 cutting-edge repositories** into a cohesive 
 | **Cost Tracking** | [AgentOps](https://github.com/AgentOps-AI/agentops) | Monitor spend & performance |
 | **Telemetry** | [OpenLit](https://github.com/openlit/openlit) | OpenTelemetry-native observability |
 
+### Security & Guardrails
+| Component | Source | Purpose |
+|-----------|--------|---------|
+| **AI Guardrails** | [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails) | Input/output validation, jailbreak prevention |
+| **LLM Security** | [LLM Guard](https://github.com/protectai/llm-guard) | Prompt injection, data leak protection |
+| **Prompt Defense** | [Rebuff](https://github.com/protectai/rebuff) | Attack pattern detection |
+| **Code Sandbox** | [Arrakis](https://github.com/abshkbh/arrakis) | MicroVM isolation with snapshot/restore |
+| **Secrets Vault** | [HashiCorp Vault](https://github.com/hashicorp/vault) | API key rotation, encrypted storage |
+| **Code Analysis** | [CodeQL](https://github.com/github/codeql) | SAST scanning for vulnerabilities |
+| **Anomaly Detection** | [OpenSearch AD](https://github.com/opensearch-project/anomaly-detection) | Behavior monitoring, threat detection |
+
 ---
 
 ## Architecture
@@ -217,6 +228,126 @@ For retailers, dropshippers, marketplace sellers:
 | **Customer Ops** | Support, sales, success — fully autonomous |
 | **Legal** | Contract analysis, compliance, risk assessment |
 | **E-commerce** | Pricing, inventory, listings, customer service |
+
+---
+
+## Security Architecture
+
+Optimus Autonomous is built with **enterprise-grade security** from the ground up. Autonomous agents are powerful — and power requires control.
+
+### Security Stack
+
+| Layer | Components | What It Does |
+|-------|------------|--------------|
+| **Input Guardrails** | NeMo Guardrails, Rebuff | Block prompt injection, jailbreak attempts |
+| **Output Validation** | LLM Guard, Guardrails AI | Filter harmful content, detect hallucinations |
+| **Permission System** | Zero-Trust RBAC | Least-privilege access, per-action consent |
+| **Code Sandbox** | Arrakis, E2B | MicroVM isolation, snapshot/restore |
+| **Secrets Management** | HashiCorp Vault | Encrypted storage, automatic rotation |
+| **Code Analysis** | CodeQL, Bearer | SAST scanning, vulnerability detection |
+| **Audit Logging** | Immutable event log | Every action timestamped and attributed |
+| **Anomaly Detection** | OpenSearch AD | Behavior monitoring, threat alerts |
+
+### Security Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     USER REQUEST                            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │    INPUT GUARDRAILS     │
+              │  • Prompt injection     │
+              │  • Jailbreak detection  │
+              │  • Rate limiting        │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │   PERMISSION CHECK      │
+              │  • Zero-trust RBAC      │
+              │  • Least privilege      │
+              │  • Action consent       │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │    AGENT EXECUTION      │
+              │  • Sandboxed environment│
+              │  • Network isolation    │
+              │  • Resource limits      │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │   OUTPUT VALIDATION     │
+              │  • Content filtering    │
+              │  • Hallucination check  │
+              │  • Data leak prevention │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │    CODE ANALYSIS        │
+              │  • SAST scanning        │
+              │  • Dependency audit     │
+              │  • Secret detection     │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │     AUDIT LOGGING       │
+              │  • Immutable trail      │
+              │  • SIEM integration     │
+              │  • Anomaly detection    │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │    SECURE OUTPUT        │
+              └─────────────────────────┘
+```
+
+### Zero-Trust Principles
+
+Optimus follows the **UK NCSC Zero Trust Architecture**:
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Never Trust, Always Verify** | Every request authenticated, every action authorized |
+| **Least Privilege** | Agents get minimum permissions needed for task |
+| **Assume Breach** | Sandbox everything, log everything, detect anomalies |
+| **Just-In-Time Access** | Elevated permissions expire after use |
+| **Defense in Depth** | Multiple security layers, no single point of failure |
+
+### Security Components
+
+#### Input Protection
+- **[NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)** — NVIDIA's programmable guardrails for LLM safety
+- **[Rebuff](https://github.com/protectai/rebuff)** — Detects prompt injection with vector similarity matching
+- **[LLM Guard](https://github.com/protectai/llm-guard)** — Comprehensive input sanitization and validation
+
+#### Execution Isolation
+- **[Arrakis](https://github.com/abshkbh/arrakis)** — MicroVM sandbox with snapshot/restore capability
+- **[E2B](https://github.com/e2b-dev/E2B)** — Cloud sandboxing with 125ms boot time
+- **[Microsandbox](https://github.com/nicholasgriffintn/microsandbox)** — Hardware-level VM isolation
+
+#### Secrets & Keys
+- **[HashiCorp Vault](https://github.com/hashicorp/vault)** — Industry-standard secrets management
+- **[Infisical](https://github.com/Infisical/infisical)** — Open-source alternative for self-hosting
+- **GitHub Secret Scanning** — Prevents accidental credential commits
+
+#### Code Security
+- **[CodeQL](https://github.com/github/codeql)** — GitHub's semantic code analysis engine
+- **[Bearer](https://github.com/Bearer/bearer)** — Security and privacy risk detection
+- **GitHub Dependabot** — Automated dependency vulnerability scanning
+
+#### Monitoring & Detection
+- **[OpenSearch AD](https://github.com/opensearch-project/anomaly-detection)** — ML-based anomaly detection
+- **[AgentOps](https://github.com/AgentOps-AI/agentops)** — Agent behavior monitoring and cost tracking
+- **Immutable Audit Logs** — Every action logged with timestamps and attribution
+
+### Red Team Testing
+
+Before production deployment, Optimus agents are tested against:
+
+- **[JailbreakBench](https://github.com/JailbreakBench/jailbreakbench)** — 100+ jailbreak attack patterns
+- **[Awesome Jailbreak on LLMs](https://github.com/yueliu1999/Awesome-Jailbreak-on-LLMs)** — Comprehensive attack database
+- **[Prompt Injection Defenses](https://github.com/tldrsec/prompt-injection-defenses)** — Defense strategy testing
 
 ---
 
