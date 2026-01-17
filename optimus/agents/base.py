@@ -109,24 +109,84 @@ class LLMAgent(BaseAgent):
         self.client = None
         self._init_client()
 
+    def _map_to_openrouter_model(self, model: str) -> str:
+        """Map model names to OpenRouter format."""
+        # Already in OpenRouter format
+        if "/" in model:
+            return model
+
+        # Common model mappings
+        model_map = {
+            # Claude Sonnet 4
+            "claude-sonnet-4-20250514": "anthropic/claude-sonnet-4",
+            "claude-sonnet-4": "anthropic/claude-sonnet-4",
+            # Claude Sonnet 4.5
+            "claude-4.5-sonnet": "anthropic/claude-sonnet-4.5",
+            "claude-sonnet-4.5": "anthropic/claude-sonnet-4.5",
+            # Claude 3.5 Sonnet
+            "claude-3-5-sonnet-20241022": "anthropic/claude-3.5-sonnet",
+            "claude-3.5-sonnet": "anthropic/claude-3.5-sonnet",
+            # Claude 3 Haiku (fast, cheap)
+            "claude-3-haiku": "anthropic/claude-3-haiku",
+            # GPT-4o
+            "gpt-4o": "openai/gpt-4o",
+            "gpt-4o-mini": "openai/gpt-4o-mini",
+            "gpt-4-turbo": "openai/gpt-4-turbo",
+        }
+
+        if model.lower() in model_map:
+            return model_map[model.lower()]
+
+        # Default: prepend anthropic/ for claude models
+        if "claude" in model.lower():
+            return f"anthropic/{model}"
+        elif "gpt" in model.lower():
+            return f"openai/{model}"
+
+        return model
+
     def _init_client(self) -> None:
         """Initialize the LLM client."""
         import os
 
+        # Check for OpenRouter first (preferred for flexibility)
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if openrouter_key:
+            try:
+                from openai import OpenAI
+                self.client = OpenAI(
+                    api_key=openrouter_key,
+                    base_url="https://openrouter.ai/api/v1"
+                )
+                self.provider = "openrouter"
+                # Map model names to OpenRouter format
+                self.model = self._map_to_openrouter_model(self.model)
+                print(f"[{self.name}] Using OpenRouter with {self.model}")
+                return
+            except ImportError:
+                print(f"[{self.name}] OpenAI package not installed (needed for OpenRouter).")
+
+        # Fall back to direct Anthropic
         if "claude" in self.model.lower():
             try:
                 from anthropic import Anthropic
-                self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-                self.provider = "anthropic"
+                api_key = os.getenv("ANTHROPIC_API_KEY")
+                if api_key:
+                    self.client = Anthropic(api_key=api_key)
+                    self.provider = "anthropic"
+                    return
             except ImportError:
                 print(f"[{self.name}] Anthropic not installed.")
-        else:
-            try:
-                from openai import OpenAI
-                self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+        # Fall back to OpenAI
+        try:
+            from openai import OpenAI
+            api_key = os.getenv("OPENAI_API_KEY")
+            if api_key:
+                self.client = OpenAI(api_key=api_key)
                 self.provider = "openai"
-            except ImportError:
-                print(f"[{self.name}] OpenAI not installed.")
+        except ImportError:
+            print(f"[{self.name}] OpenAI not installed.")
 
     async def execute(self, task: str, context: Optional[str] = None) -> AgentResponse:
         """Execute a task using the LLM."""
@@ -145,6 +205,8 @@ class LLMAgent(BaseAgent):
         try:
             if self.provider == "anthropic":
                 response = await self._call_anthropic(system_prompt, user_prompt)
+            elif self.provider == "openrouter":
+                response = await self._call_openrouter(system_prompt, user_prompt)
             else:
                 response = await self._call_openai(system_prompt, user_prompt)
 
@@ -234,6 +296,68 @@ You are part of Optimus Autonomous, a multi-agent system. Execute tasks efficien
             }
 
         return await loop.run_in_executor(None, call)
+
+    async def _call_openrouter(self, system: str, user: str) -> Dict[str, Any]:
+        """Call OpenRouter API (OpenAI-compatible)."""
+        import asyncio
+        import os
+
+        loop = asyncio.get_event_loop()
+
+        def call():
+            """Sync wrapper for OpenRouter API call."""
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user}
+                ],
+                extra_headers={
+                    "HTTP-Referer": "https://github.com/itsjwill/optimus-autonomous",
+                    "X-Title": "Optimus Trading Brain"
+                }
+            )
+
+            # Calculate cost based on model
+            tokens = response.usage.total_tokens if response.usage else 0
+            cost = self._calculate_cost_openrouter(
+                response.usage.prompt_tokens if response.usage else 0,
+                response.usage.completion_tokens if response.usage else 0
+            )
+
+            return {
+                "content": response.choices[0].message.content,
+                "tokens": tokens,
+                "cost": cost,
+            }
+
+        return await loop.run_in_executor(None, call)
+
+    def _calculate_cost_openrouter(self, input_tokens: int, output_tokens: int) -> float:
+        """Calculate cost for OpenRouter based on model."""
+        # OpenRouter pricing per 1M tokens (as of Jan 2026)
+        costs = {
+            # Claude Sonnet 4.x
+            "anthropic/claude-sonnet-4": {"input": 3.0, "output": 15.0},
+            "anthropic/claude-sonnet-4.5": {"input": 3.0, "output": 15.0},
+            # Claude 3.x
+            "anthropic/claude-3.5-sonnet": {"input": 3.0, "output": 15.0},
+            "anthropic/claude-3-haiku": {"input": 0.25, "output": 1.25},
+            # OpenAI
+            "openai/gpt-4-turbo": {"input": 10.0, "output": 30.0},
+            "openai/gpt-4o": {"input": 2.5, "output": 10.0},
+            "openai/gpt-4o-mini": {"input": 0.15, "output": 0.6},
+        }
+
+        rates = costs.get(self.model, {"input": 3.0, "output": 15.0})
+        input_cost = (input_tokens / 1_000_000) * rates["input"]
+        output_cost = (output_tokens / 1_000_000) * rates["output"]
+
+        total = input_cost + output_cost
+        self._total_cost += total
+        self._total_tokens += input_tokens + output_tokens
+
+        return total
 
     def _calculate_cost(self, usage, provider: str) -> float:
         """Calculate cost based on token usage."""

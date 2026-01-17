@@ -2,13 +2,16 @@
 Team - Agent team coordination
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, TYPE_CHECKING
 
 from ..core.config import OptimusConfig, TeamConfig
 from .base import BaseAgent, LLMAgent
-from .code_team import CodeTeam
-from .web_team import WebTeam
-from .strategy_team import StrategyTeam
+
+# Delayed imports to avoid circular dependency
+if TYPE_CHECKING:
+    from .code_team import CodeTeam
+    from .web_team import WebTeam
+    from .strategy_team import StrategyTeam
 
 
 class Team:
@@ -202,6 +205,11 @@ class TeamFactory:
         Returns:
             Dictionary of team name to Team instance
         """
+        # Import here to avoid circular dependency
+        from .code_team import CodeTeam
+        from .web_team import WebTeam
+        from .strategy_team import StrategyTeam
+
         return {
             "code": CodeTeam(model=model, verbose=verbose),
             "web": WebTeam(model=model, verbose=verbose),
