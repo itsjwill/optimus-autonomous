@@ -314,7 +314,7 @@ You are part of Optimus Autonomous, a multi-agent system. Execute tasks efficien
                 ],
                 extra_headers={
                     "HTTP-Referer": "https://github.com/itsjwill/optimus-autonomous",
-                    "X-Title": "Optimus Trading Brain"
+                    "X-Title": "Optimus Autonomous"
                 }
             )
 
