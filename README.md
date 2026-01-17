@@ -251,6 +251,93 @@ path = await graph.find_path("user_1", "project_1")
 
 The Trading Team is a 5-agent system for autonomous trading intelligence, designed to analyze performance, optimize strategies, and make decisions without human intervention.
 
+## Complete System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    ALPHA ENGINE 2.0                                          │
+│                           Real-Time Market Intelligence Layer                                │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              │
+        ┌───────────────┬───────────────┬─────┴─────┬───────────────┬───────────────┐
+        ▼               ▼               ▼           ▼               ▼               ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│    Oracle    │ │    Whale     │ │    Social    │ │   Funding    │ │   Advanced   │ │     Hive     │
+│   Monitor    │ │   Tracker    │ │    Alpha     │ │   Monitor    │ │    Alpha     │ │     Mind     │
+├──────────────┤ ├──────────────┤ ├──────────────┤ ├──────────────┤ ├──────────────┤ ├──────────────┤
+│ Cross-       │ │ 134K+ Whale  │ │ Sentiment    │ │ Funding Rate │ │ Options IV   │ │ Signal       │
+│ Exchange     │ │ Positions    │ │ Analysis     │ │ Arbitrage    │ │ MEV/Stale    │ │ Aggregation  │
+│ Prices       │ │ (Moon Dev)   │ │              │ │ Detection    │ │ Detection    │ │ & Consensus  │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                │                │                │                │
+       └────────────────┴────────────────┴────────────────┴────────────────┴────────────────┘
+                                              │
+                                              ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       brain.db                                               │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │   trades    │ │   shadow    │ │   alpha     │ │    whale    │ │  decisions  │            │
+│  │   (60+)     │ │   trades    │ │   signals   │ │   signals   │ │   (MANTIS)  │            │
+│  │             │ │   (243+)    │ │   (47K+)    │ │   (134K+)   │ │             │            │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘            │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              │
+                    ┌─────────────────────────┴─────────────────────────┐
+                    ▼                                                   ▼
+┌─────────────────────────────────────────┐       ┌─────────────────────────────────────────┐
+│            MANTIS (Rule-Based)          │       │         OPTIMUS TRADING BRAIN           │
+│         Parameter Auto-Learner          │       │           (5 AI Agents)                 │
+├─────────────────────────────────────────┤       ├─────────────────────────────────────────┤
+│ • Analyzes shadow trades vs real        │       │ • SystemArchitect orchestrates flow     │
+│ • Adjusts: direction, stops, sizing     │       │ • TradeAnalyst finds patterns           │
+│ • 70% confidence threshold              │       │ • Optimizer recommends changes          │
+│ • Max 3 changes/day                     │       │ • RiskGuard vetoes risky changes        │
+│ • 2-hour cooldown                       │       │ • Executor makes APPLY/DEFER/REJECT     │
+└─────────────────────────────────────────┘       └─────────────────────────────────────────┘
+                    │                                                   │
+                    └─────────────────────────┬─────────────────────────┘
+                                              ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    TRADING BOTS                                              │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │   Billy V4  │ │  Blood V5.1 │ │  Reaper V2  │ │ PHANTOM V2  │ │   Arbiter   │            │
+│  │  RSI Mean   │ │ Liquidation │ │   15x Aggr  │ │  Confluence │ │  dYdX Arb   │            │
+│  │  Reversion  │ │   Cascade   │ │   Signals   │ │   Signals   │ │   Spreads   │            │
+│  │  LONGS ONLY │ │ Asymm Z     │ │             │ │  90.5% Win  │ │             │            │
+│  └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘ └──────┬──────┘            │
+│         │              │              │              │              │                       │
+│         └──────────────┴──────────────┴──────────────┴──────────────┘                       │
+│                                         │                                                   │
+└─────────────────────────────────────────┼───────────────────────────────────────────────────┘
+                                          ▼
+                              ┌─────────────────────────┐
+                              │       Hyperliquid       │
+                              │    (DEX - Live Trading) │
+                              │    Main: $320 | Reaper: $40
+                              └─────────────────────────┘
+```
+
+### Alpha Engine 2.0 Services (12 Running)
+
+| Service | Type | Function |
+|---------|------|----------|
+| **oracle-monitor** | Alpha | Cross-exchange price comparison, stale detection |
+| **whale-tracker** | Alpha | 134K+ whale positions from Moon Dev API |
+| **social-alpha** | Alpha | Social sentiment analysis |
+| **funding-monitor** | Alpha | Funding rate arbitrage opportunities |
+| **hive-mind** | Alpha | Signal aggregation & consensus generation |
+| **advanced-alpha** | Alpha | Options IV, MEV protection, stale detection |
+| **billy-v4** | Trading | RSI mean reversion (LONGS ONLY) |
+| **blood-v5** | Trading | Liquidation cascade (Asymmetric Z) |
+| **reaper** | Trading | 15x aggressive signals |
+| **phantom** | Trading | Multi-signal confluence (90.5% backtest) |
+| **arbiter** | Arbitrage | dYdX spread arbitrage |
+| **optimus-brain** | AI | 5 LLM agents for autonomous decisions |
+
+---
+
+## Optimus Trading Brain (5-Agent Flow)
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        OPTIMUS TRADING BRAIN                                 │
