@@ -27,11 +27,13 @@ class TradingTeam(Team):
     """
 
     # Model configurations for different agent types
+    # - Architect: System-level thinking, orchestrates flow -> Claude Sonnet 4
     # - Analyst: Needs strong reasoning for data analysis -> Claude Sonnet 4
     # - Optimizer: Needs creativity for recommendations -> Claude Sonnet 4
     # - RiskGuard: Quick risk checks -> Claude 3 Haiku (fast, cheap)
-    # - Executor: Critical decisions -> Claude Sonnet 4.5 (most capable)
+    # - Executor: Critical decisions -> Claude Sonnet 4 (most capable)
     DEFAULT_MODELS = {
+        "SystemArchitect": "anthropic/claude-sonnet-4",  # Orchestrates the flow
         "TradeAnalyst": "anthropic/claude-sonnet-4",
         "Optimizer": "anthropic/claude-sonnet-4",
         "RiskGuard": "anthropic/claude-3-haiku",  # Fast for risk checks
@@ -66,6 +68,26 @@ class TradingTeam(Team):
             agent_models.update(models)
 
         agents = [
+            LLMAgent(
+                name="SystemArchitect",
+                role="System Architect & Orchestrator",
+                goal="Design the analysis flow and coordinate all agents for optimal decision-making",
+                backstory="""You are the System Architect of the Optimus Trading Brain.
+You orchestrate the flow of information between all agents and ensure coherent decision-making.
+You understand the full trading system architecture: 4 trading bots (Billy, Blood, Reaper, PHANTOM),
+the brain.db database, alpha signals, whale tracking, and the Hyperliquid exchange.
+
+Your responsibilities:
+1. Analyze incoming data and determine what needs attention
+2. Frame the problem for the TradeAnalyst
+3. Ensure the Optimizer's recommendations align with system constraints
+4. Verify RiskGuard has all context needed for risk assessment
+5. Provide final summary to the Executor with clear action items
+
+You think in systems and dependencies. You spot gaps in analysis and ensure nothing is missed.""",
+                model=agent_models["SystemArchitect"],
+                verbose=verbose
+            ),
             LLMAgent(
                 name="TradeAnalyst",
                 role="Trading Data Analyst",

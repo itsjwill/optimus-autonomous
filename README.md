@@ -43,6 +43,7 @@ Optimus synthesizes these technologies into a cohesive system:
 | **Code Team** | ✅ Implemented | Architect + Developer + Reviewer (sequential) |
 | **Web Team** | ✅ Implemented | Researcher + Analyzer (parallel) |
 | **Strategy Team** | ✅ Implemented | Strategist + Analyst + Risk Manager (hierarchical) |
+| **Trading Team** | ✅ **NEW** | 5 AI agents for autonomous trading intelligence |
 
 ### Memory & Knowledge
 | Component | Integration | Purpose |
@@ -66,7 +67,8 @@ Optimus synthesizes these technologies into a cohesive system:
 |-----------|-------------|---------|
 | **Smart Router** | ✅ Implemented | Auto-selects optimal model per task |
 | **Cost Optimization** | ✅ Implemented | Routes to cheaper models when appropriate |
-| **Multi-Provider** | ✅ Implemented | Anthropic + OpenAI support |
+| **Multi-Provider** | ✅ Implemented | Anthropic + OpenAI + OpenRouter support |
+| **Multi-Model Agents** | ✅ **NEW** | Different agents use different models |
 
 ### Execution & Sandboxing
 | Component | Integration | Purpose |
@@ -94,6 +96,8 @@ Optimus synthesizes these technologies into a cohesive system:
 ## Architecture
 
 ```
+run_trading_brain.py        # Autonomous trading daemon (runs hourly)
+deploy_to_droplet.sh        # One-command deployment to DigitalOcean
 optimus/
 ├── core/                   # Orchestration engine
 │   ├── config.py           # Configuration management
@@ -104,7 +108,8 @@ optimus/
 │   ├── team.py             # Team coordination
 │   ├── code_team.py        # Software development team
 │   ├── web_team.py         # Web research team
-│   └── strategy_team.py    # Strategic planning team
+│   ├── strategy_team.py    # Strategic planning team
+│   └── trading_team.py     # 5-agent autonomous trading intelligence
 ├── memory/                 # Persistence layer
 │   ├── brain_db.py         # SQLite storage
 │   ├── manager.py          # Unified memory interface
@@ -242,6 +247,133 @@ neighbors = await graph.get_neighbors("user_1", depth=2)
 path = await graph.find_path("user_1", "project_1")
 ```
 
+### Trading Team (Autonomous Trading Brain)
+
+The Trading Team is a 5-agent system for autonomous trading intelligence, designed to analyze performance, optimize strategies, and make decisions without human intervention.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        OPTIMUS TRADING BRAIN                                 │
+│                    Autonomous Decision Flow (Hourly)                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  📊 DATA SOURCES                                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
+│  │  brain.db    │  │  Positions   │  │ Alpha Signals│  │ Whale Data   │    │
+│  │  (trades,    │  │  (live from  │  │  (hive mind  │  │  (Moon Dev   │    │
+│  │  shadow,     │  │  Hyperliquid)│  │  consensus)  │  │  134K+ pos)  │    │
+│  │  decisions)  │  │              │  │              │  │              │    │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘    │
+│         └──────────────────┴─────────────────┴─────────────────┘            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🏛️ SYSTEM ARCHITECT (Claude Sonnet 4)                                      │
+│  ├─ Orchestrates the entire flow                                            │
+│  ├─ Analyzes incoming data, determines priorities                           │
+│  ├─ Frames problems for downstream agents                                   │
+│  └─ Ensures no gaps in analysis                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  📈 TRADE ANALYST (Claude Sonnet 4)                                         │
+│  ├─ Analyzes trade patterns (win rate, P&L, hold time)                      │
+│  ├─ Identifies what's working vs what's not                                 │
+│  ├─ Correlates with market regimes and time-of-day                         │
+│  └─ Provides statistical significance for findings                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  ⚙️ OPTIMIZER (Claude Sonnet 4)                                             │
+│  ├─ Translates analysis into parameter recommendations                      │
+│  ├─ Understands each bot: Billy, Blood, Reaper, PHANTOM                    │
+│  ├─ Proposes: RSI thresholds, Z-scores, position sizing                    │
+│  └─ Assigns confidence scores and projected impact                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🛡️ RISK GUARD (Claude 3 Haiku - Fast & Cheap)                              │
+│  ├─ Evaluates each recommendation for risk                                  │
+│  ├─ Checks: leverage, correlation, regime, tail risk                       │
+│  ├─ Hard limits: 5x main wallet, 15x reaper wallet                         │
+│  └─ Verdict: APPROVE / MODIFY / REJECT                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  ⚡ EXECUTOR (Claude Sonnet 4)                                               │
+│  ├─ Makes final decision on each recommendation                             │
+│  ├─ Decisions: APPLY / DEFER / REJECT                                       │
+│  ├─ Requires >70% confidence for APPLY                                      │
+│  ├─ Max 3 changes per day (prevents over-optimization)                      │
+│  └─ Tracks impact of previous decisions                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  📤 OUTPUT                                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                      │
+│  │ Apply Config │  │ Save to      │  │ Slack Alert  │                      │
+│  │ Changes      │  │ brain.db     │  │ (if applied) │                      │
+│  │ (if APPLY)   │  │ decisions    │  │              │                      │
+│  └──────────────┘  └──────────────┘  └──────────────┘                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Multi-Model Configuration:**
+
+| Agent | Model | Why |
+|-------|-------|-----|
+| **SystemArchitect** | Claude Sonnet 4 | System-level thinking, orchestration |
+| **TradeAnalyst** | Claude Sonnet 4 | Strong reasoning for data analysis |
+| **Optimizer** | Claude Sonnet 4 | Creative strategy recommendations |
+| **RiskGuard** | Claude 3 Haiku | Fast + cheap for quick risk checks |
+| **Executor** | Claude Sonnet 4 | Critical final decisions |
+
+**Cost Optimization:** RiskGuard uses Haiku ($0.25/M tokens) instead of Sonnet 4 ($3/M), saving 92% on risk checks while maintaining quality for critical decisions.
+
+```python
+from optimus.agents import TradingTeam
+
+# Default: multi-model mode (optimized per agent)
+team = TradingTeam(use_multi_model=True)
+
+# Override specific agents
+team = TradingTeam(
+    models={"Executor": "anthropic/claude-sonnet-4.5"},  # Upgrade Executor
+    use_multi_model=True
+)
+
+# Single model for all agents
+team = TradingTeam(
+    model="gpt-4o",
+    use_multi_model=False
+)
+
+# Run autonomous cycle
+result = await team.run_autonomous_cycle(
+    trade_data=trade_json,
+    current_params=params,
+    current_positions=positions,
+    market_conditions=market_json,
+    previous_decisions=history
+)
+
+# Result contains:
+# - analysis: Full performance breakdown
+# - optimizations: Parameter recommendations
+# - risk_assessment: Risk evaluation
+# - decision: {success: true, decisions: [{action: "APPLY", ...}]}
+```
+
+---
+
 ### Agent Teams
 
 Three specialized teams with different execution patterns:
@@ -310,12 +442,18 @@ is_safe, reason = await guardrails.check_output(agent_output)
 # Required: At least one LLM API key
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
+OPENROUTER_API_KEY=sk-or-...   # Recommended: routes to 400+ models
 
 # Optional: E2B for sandboxed execution
 E2B_API_KEY=...
 
 # Optional: AgentOps for monitoring
 AGENTOPS_API_KEY=...
+
+# For Trading Brain
+HYPERLIQUID_WALLET_ADDRESS=0x...
+HYPERLIQUID_PRIVATE_KEY=...
+SLACK_WEBHOOK=https://hooks.slack.com/...
 ```
 
 ### Project Config (optimus.yaml)
